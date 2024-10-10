@@ -1,0 +1,47 @@
+
+.sessions 2;
+ERRLIMIT 40;
+.LOGON 192.168.146.128 /dbc,dbc;
+DATABASE DB_STG;
+
+.set record vartext ",";
+
+DROP TABLE DB_STG.steam_categories;
+
+CREATE SET TABLE steam_categories, NO FALLBACK,
+	NO BEFORE JOURNAL,
+	NO AFTER JOURNAL
+(
+App_ID VARCHAR(255) CHARACTER SET LATIN NOT CASESPECIFIC,
+Categories VARCHAR(255) CHARACTER SET LATIN NOT CASESPECIFIC
+)
+PRIMARY INDEX (App_ID);
+
+RECORD 2;
+
+DEFINE
+App_ID (VARCHAR(255)),
+Categories (VARCHAR(255)),
+
+
+FILE = "C:\Users\user-name\Desktop\DWH_BATCH-01-Final-Assignment-Teradata-and-Tableau\csv_categories.csv";
+
+
+BEGIN LOADING
+steam_categories
+ERRORFILES
+steam_categories_ERROR1, steam_categories_ERROR2
+CHECKPOINT 10000;
+
+INSERT INTO steam_categories (
+App_ID,
+Categories
+)
+
+VALUES (
+:App_ID,
+:Categories
+);
+
+END LOADING;
+.LOGOFF;

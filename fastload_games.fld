@@ -1,0 +1,75 @@
+
+.sessions 2;
+ERRLIMIT 40;
+.LOGON 192.168.146.128 /dbc,dbc;
+DATABASE DB_STG;
+
+.set record vartext ",";
+
+DROP TABLE DB_STG.steam_games;
+
+CREATE SET TABLE steam_games, NO FALLBACK,
+	NO BEFORE JOURNAL,
+	NO AFTER JOURNAL
+(
+App_ID VARCHAR(255) CHARACTER SET LATIN NOT CASESPECIFIC,
+Game_Name VARCHAR(255) CHARACTER SET LATIN NOT CASESPECIFIC,
+Release_Date VARCHAR(255) CHARACTER SET LATIN NOT CASESPECIFIC,
+Price VARCHAR(255) CHARACTER SET LATIN NOT CASESPECIFIC,
+Positive VARCHAR(255) CHARACTER SET LATIN NOT CASESPECIFIC,	
+Negative VARCHAR(255) CHARACTER SET LATIN NOT CASESPECIFIC,	
+Min_Owners VARCHAR(255) CHARACTER SET LATIN NOT CASESPECIFIC,	
+Max_Owners VARCHAR(255) CHARACTER SET LATIN NOT CASESPECIFIC,
+HLTB_Single VARCHAR(255) CHARACTER SET LATIN NOT CASESPECIFIC
+)
+PRIMARY INDEX (App_ID);
+
+RECORD 2;
+
+DEFINE
+App_ID (VARCHAR(255)),
+Game_Name (VARCHAR(255)),
+Release_Date (VARCHAR(255)),
+Price (VARCHAR(255)),
+Positive (VARCHAR(255)),
+Negative (VARCHAR(255)),
+Min_Owners (VARCHAR(255)),
+Max_Owners (VARCHAR(255)),
+HLTB_Single (VARCHAR(255)),
+
+
+FILE = "C:\Users\user-name\Desktop\DWH_BATCH-01-Final-Assignment-Teradata-and-Tableau\csv_games.csv";
+
+
+BEGIN LOADING
+steam_games
+ERRORFILES
+steam_games_ERROR1, steam_games_ERROR2
+CHECKPOINT 10000;
+
+INSERT INTO steam_games (
+App_ID,
+Game_Name,
+Release_Date,
+Price,
+Positive,
+Negative,
+Min_Owners,
+Max_Owners,
+HLTB_Single
+)
+
+VALUES (
+:App_ID,
+:Game_Name,
+:Release_Date,
+:Price,
+:Positive,
+:Negative,
+:Min_Owners,
+:Max_Owners,
+:HLTB_Single
+);
+
+END LOADING;
+.LOGOFF;

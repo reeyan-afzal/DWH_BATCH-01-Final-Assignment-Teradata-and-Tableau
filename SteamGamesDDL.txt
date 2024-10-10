@@ -1,0 +1,34 @@
+CREATE SET  TABLE DB_STG_SteamGames.Game_DIM (
+    App_ID VARCHAR(15) NOT NULL PRIMARY KEY,
+    Game_Name VARCHAR(255)
+);
+
+CREATE SET TABLE DB_STG_SteamGames.Game_Categories_DIM (
+    App_ID VARCHAR(15) NOT NULL,
+    Category_ID INTEGER NOT NULL,
+    PRIMARY KEY (App_ID, Category_ID),
+    FOREIGN KEY (Category_ID) REFERENCES DB_STG_SteamGames.Category_DIM (Category_ID)
+);
+
+
+CREATE SET TABLE DB_STG_SteamGames.Game_Tags_DIM (
+    App_ID VARCHAR(15) NOT NULL,
+    Tag_ID INTEGER NOT NULL,
+	Tag_Freq INTEGER NOT NULL,
+    PRIMARY KEY (App_ID, Tag_ID),
+    FOREIGN KEY (Tag_ID) REFERENCES DB_STG_SteamGames.Tag_DIM (Tag_ID)
+);
+
+
+CREATE SET TABLE DB_STG_SteamGames.Game_Stats_Fact (
+    App_ID VARCHAR(15) NOT NULL,
+	Release_Date DATE FORMAT 'YYYY-MM-DD',
+    Price DECIMAL(10, 2),
+    Positive INTEGER,
+    Negative INTEGER,
+    Min_Owners INTEGER,
+    Max_Owners INTEGER,
+    HLTB_Single INTEGER
+)
+PRIMARY INDEX (App_ID)
+PARTITION BY RANGE_N(Release_Date BETWEEN DATE '2013-01-01' AND DATE '2024-05-31' EACH INTERVAL '1' YEAR);

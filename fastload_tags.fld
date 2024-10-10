@@ -1,0 +1,51 @@
+
+.sessions 2;
+ERRLIMIT 40;
+.LOGON 192.168.146.128 /dbc,dbc;
+DATABASE DB_STG;
+
+.set record vartext ",";
+
+DROP TABLE DB_STG.steam_tags;
+
+CREATE SET TABLE steam_tags, NO FALLBACK,
+	NO BEFORE JOURNAL,
+	NO AFTER JOURNAL
+(
+App_ID VARCHAR(255) CHARACTER SET LATIN NOT CASESPECIFIC,
+Tag_ID VARCHAR(255) CHARACTER SET LATIN NOT CASESPECIFIC,
+Tag_Frequencies VARCHAR(255) CHARACTER SET LATIN NOT CASESPECIFIC
+)
+PRIMARY INDEX (App_ID);
+
+RECORD 2;
+
+DEFINE
+App_ID (VARCHAR(255)),
+Tag_ID (VARCHAR(255)),
+Tag_Frequencies (VARCHAR(255)),
+
+
+FILE = "C:\Users\user-name\Desktop\DWH_BATCH-01-Final-Assignment-Teradata-and-Tableau\csv_tags.csv";
+
+
+BEGIN LOADING
+steam_tags
+ERRORFILES
+steam_tags_ERROR1, steam_tags_ERROR2
+CHECKPOINT 10000;
+
+INSERT INTO steam_tags (
+App_ID,
+Tag_ID,
+Tag_Frequencies
+)
+
+VALUES (
+:App_ID,
+:Tag_ID,
+:Tag_Frequencies
+);
+
+END LOADING;
+.LOGOFF;

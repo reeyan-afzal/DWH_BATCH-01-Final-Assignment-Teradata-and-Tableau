@@ -1,0 +1,42 @@
+INSERT INTO DB_STG_SteamGames.Game_DIM
+SEL 
+CAST(App_ID as varchar(15)) as App_ID
+,CAST(Game_Name as varchar(255)) as Game_Name
+from DB_STG.steam_games;
+
+INSERT INTO DB_STG_SteamGames.Game_Categories_DIM
+SEL 
+CAST(App_ID as varchar(15)) as App_ID
+,CAST(Categories as INTEGER) as Category_ID
+from DB_STG.steam_categories;
+
+INSERT INTO DB_STG_SteamGames.Game_Tags_DIM
+SEL 
+CAST(App_ID as varchar(15)) as App_ID
+,CAST(Tag_ID as INTEGER) as Tag_ID
+,CAST(Tag_Frequencies as INTEGER) as Tag_Freq
+from DB_STG.steam_tags;
+
+INSERT INTO DB_STG_SteamGames.Game_Stats_Fact (
+    App_ID,
+    Release_Date,
+    Price,
+    Positive,
+    Negative,
+    Min_Owners,
+    Max_Owners,
+    HLTB_Single
+)
+SELECT 
+    App_ID,
+    Release_Date,
+    Price,
+    Positive,
+    Negative,
+    Min_Owners,
+    Max_Owners,
+    HLTB_Single
+FROM 
+    DB_STG.steam_games
+WHERE 
+    Release_Date > DATE '2013-01-01';
